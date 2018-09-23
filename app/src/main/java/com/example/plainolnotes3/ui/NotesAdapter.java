@@ -51,7 +51,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, mTextview);
+            ButterKnife.bind(this, itemView);
         }
     }
 }
