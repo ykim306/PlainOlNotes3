@@ -1,19 +1,38 @@
 package com.example.plainolnotes3.database;
 
+import android.content.Context;
+
 import com.example.plainolnotes3.utilities.SampleData;
 
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class AppRepository {
-    private static final AppRepository ourInstance = new AppRepository();
+    private static AppRepository ourInstance;
 
-    public static AppRepository getInstance() {
+    public List<NoteEntity> mNotes;
+    private NoteDatabase mDb;
+    private Executor executor = Executors.newSingleThreadExecutor();
+
+    public static AppRepository getInstance(Context context) {
+        if (ourInstance == null) {
+            ourInstance = new AppRepository(context);
+        }
         return ourInstance;
     }
 
-    public List<NoteEntity> mNotes;
-
-    private AppRepository() {
+    private AppRepository(Context context) {
         mNotes = SampleData.getNotes();
+        mDb = NoteDatabase.getInstance(context);
+    }
+
+    public void addSampleData() {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                mDb.noteDao().insertNoteAll(SampleData.getNotes());
+            }
+        });
     }
 }
