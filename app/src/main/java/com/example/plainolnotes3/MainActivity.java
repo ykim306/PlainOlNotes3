@@ -1,8 +1,11 @@
 package com.example.plainolnotes3;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,28 +50,34 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         ButterKnife.bind(this);
-        initViewModel();
         initRecyclerView();
-
-        notesData.addAll(mViewModel.mNotes);
-
-        for (NoteEntity note :
-                notesData) {
-            Log.i(TAG, note.toString());
-        }
+        initViewModel();
     }
 
     private void initViewModel() {
+        final Observer<List<NoteEntity>> noteObserver = new Observer<List<NoteEntity>>() {
+            @Override
+            public void onChanged(@Nullable List<NoteEntity> noteEntities) {
+                notesData.clear();
+                notesData.addAll(noteEntities);
+
+                if (mAdapter == null) {
+                    mAdapter = new NotesAdapter(notesData, MainActivity.this);
+                    mRecyclerView.setAdapter(mAdapter);
+                } else {
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+        };
+
         mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        mViewModel.mNotes.observe(this, noteObserver);
     }
 
     private void initRecyclerView() {
         mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
-
-        mAdapter = new NotesAdapter(notesData, this);
-        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
