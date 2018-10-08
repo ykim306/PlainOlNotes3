@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.action_delete_sample_data) {
             deleteAllData();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

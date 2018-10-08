@@ -27,7 +27,7 @@ public interface NoteDao {
     LiveData<List<NoteEntity>> getAll();
 
     @Query("DELETE FROM notes")
-    void deleteAll();
+    int deleteAll();
 
     @Query("SELECT COUNT(*) FROM notes")
     int getCount();
