@@ -95,4 +95,5 @@
     <string name="action_delete_sample_data">Delete All Data</string>
     <string name="new_note">New Note</string>
     <string name="edit_note">Edit Note</string>
+    <string name="delete">Delete</string>
 </resources>
